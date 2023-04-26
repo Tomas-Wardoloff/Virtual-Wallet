@@ -3,9 +3,9 @@ This is a personal project where I design a virtual wallet to track personal exp
 I am going to use Python 3.11 to build the application, Git and GitHub to keep track of the code, [sqlite3](https://docs.python.org/3/library/sqlite3.html) to create and manage the database, [pytest](https://docs.pytest.org/en/7.3.x/contents.html) to test the functions of the code, [coverage.py](https://coverage.readthedocs.io/en/7.2.3/#) to see how much of the code is being tested, [virtualenv](https://docs.python.org/3/library/venv.html) just to be more pythonic and keep a track of the packages that I am going to use and also Chatgpt to ask different business rules, functionalities and issues that came out during the process (which I am not sure to add or not).
 
 ## Table of contents
-- [Description of the project]()
-- [Tech Stack]()
-- [Authors]()
+- [Description of the project](#description-of-the-project)
+- [Database](#database)
+- [Authors](#authors)
 
 ## Description of the project
 I am using Python to create this virtual wallet that allows users to enter their incomes and expenses and keep a track of their finances using the features described below.
