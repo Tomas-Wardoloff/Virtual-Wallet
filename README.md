@@ -27,18 +27,26 @@ I am using Python to create this virtual wallet that allows users to enter their
    The application shows the user an analysis of their transactions to have a better understanding of their spending and saving habits. The application offer charts and statistics to help the user see how their money is being spent.
 
 ## Database
-I am going to use the sqlite3 library to create and manage a database locally that stores all the data from the user. To start, The database has a table called user that stores the following information for each user:
-```SQL
-CREATE TABLE IF NOT EXISTS vwallet.users(
-        UserId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        LoginName VARCHAR(50) NOT NULL,
-        FirstName VARCHAR(50) NOT NULL,
-        LastName VARCHAR(50) NOT NULL,
-        Email VARCHAR(50) NOT NULL,
-        Password VARCHAR(50) NOT NULL
-    );
-```
-The general idea, so far, is to create a database with the personal information of each ussser and have different wallets related to each user, with their own transactions, expenses, and incomes.
+
+From the beginning, I knew I was going to work with a database and what data I wanted to store, but I did not know how to struct the database. So I asked Chat-GTP.
+After chatting and seeing different databases that Chat-GTP provided me, I modified one of those ideas and came out with this:
+The database has four main tables: Users, Transactions, Categories and Wallets.
+
+- **Users**
+  The Users table will store information about each user, such as their login name, email and password. Each user will have a unique identifier, which will serve as the primary key for this table
+
+- **Categories**
+  This table only stores the information of the different categories that the users can use to identify their transactions, and like the user's table, it has a unique identifier.
+
+- **Transactions**
+  This table store information about each transaction made by the users. This table will have two foreign keys, one references the User table so each transaction will be associated with a particular user, and the other one references the Categories table.
+
+- **Wallets**
+  This table store a "summit" of the user's wallet. This one has a foreign key that references the User table and also stores information such as currency, balance and an identifier.
+
+<p align="center">
+   <img src="https://raw.githubusercontent.com/Tomas-Wardoloff/Virtual-Wallet/main/Database%20Diagram.jpg" alt="Database Diagram" width="600" height="400"/>
+</p>
 
 ## Authors
 - [@Tomas-Wardoloff](https://www.github.com/Tomas-Wardoloff)
