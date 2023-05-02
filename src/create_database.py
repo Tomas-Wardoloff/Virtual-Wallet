@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     users_table = """
     CREATE TABLE Users(
-        UserId INT PRIMARY KEY,
+        UserId INTEGER PRIMARY KEY AUTOINCREMENT,
         LoginName VARCHAR(50),
         Email VARCHAR(50),
         Password VARCHAR(50)
@@ -18,14 +18,14 @@ if __name__ == "__main__":
 
     categories_table = """
     CREATE TABLE Categories(
-        CategoryId INT PRIMARY KEY,
+        CategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
         Name VARCHAR(50)
         );
     """
 
     transactions_table = """
     CREATE TABLE Transactions(
-        TransactionId INT PRIMARY KEY,
+        TransactionId INTEGER PRIMARY KEY AUTOINCREMENT,
         Date DATE,
         Amount DECIMAL(9,2),
         Description VARCHAR(250),
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     wallets_table = """
     CREATE TABLE Wallets(
-        WalletId INT PRIMARY KEY,
+        WalletId INTEGER PRIMARY KEY AUTOINCREMENT,
         Balance DECIMAL(9, 2),
         Currency VARCHAR(16),
         UserId INT,
