@@ -2,6 +2,17 @@ import sqlite3 as sql
 from sqlite3 import Error
 
 """
+Get a list of all the records that match a query
+"""
+def get_data(connection: sql.Connection, query: str) -> list:
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query)
+        return cursor.fetchall()
+    except Error as err:
+        print(f"Error: '{err}")
+
+"""
 Run a sql query into the database
 
 Keyword arguments:
