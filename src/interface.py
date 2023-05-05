@@ -8,7 +8,16 @@ def clear_shell():
 
 
 def log_in_user(connection):
-    pass
+    clear_shell()
+    login_name = input("Enter username: ").strip()
+    password = input("Enter user password: ").strip()
+    
+    query = f"SELECT * FROM Users WHERE LoginName='{login_name}' AND Password='{password}';"
+    if db.get_data(connection, query) == []:
+        print(f"The user with the name and the password entered is incorrect")
+    else:
+        print("Success, the user is in the system")
+    os.system("pause")
 
 
 def sign_up_user(connection):
