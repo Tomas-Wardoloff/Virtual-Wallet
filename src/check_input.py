@@ -41,25 +41,25 @@ def check_email() -> str:
 """This function show all the currencies available and iterate until the user enter a valid option"""
 def check_currency() -> str:
     currencies = {
-        1: "United States Dollar",
-        2: "Euro",
-        3: "Japanese Yen",
-        4: "British Pound",
-        5: "Australian Dollar",
-        6: "Canadian Dollar",
-        7: "Swiss Franc",
-        8: "Chinese Yuan",
-        9: "Hong Kong Dollar",
-        10: "Swedish Krona",
+        1: ["US Dollar", "USD"],
+        2: ["Euro", "EUR"],
+        3: ["Japanase Yen", "JPY"],
+        4: ["British Pound", "GBP"],
+        5: ["Australian Dollar", "AUD"],
+        6: ["Canadian Dollar", "CAD"],
+        7: ["Swiss Franc", "CHF"],
+        8: ["Chinese Yuan", "CNY"],
+        9: ["Hong Kong Dollar", "HKD"],
+        10: ["Swedish Krona", "SEK"]
     }
     for index in range(1,11):
-        print(index, currencies[index])
+        print(index, currencies[index][0])
         
     while True:
         try:
             option = int(input("Enter the currency of your choice: "))
             if option in list(range(1,11)):
-                return currencies[option]
+                return currencies[option][1]
             else:
                 print("Option out of range")
         except ValueError:
