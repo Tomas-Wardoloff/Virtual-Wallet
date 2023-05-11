@@ -7,7 +7,7 @@ def check_int() -> int:
             option = int(input("Select and option from the menu: "))
             return option
         except ValueError:
-            print("Invalid input. Try again")
+            print("Invalid input. Please enter a valid integer.")
 
 
 """
@@ -22,7 +22,7 @@ def check_user_name(message: str) -> str:
     ).strip()
     while True:
         if 3 < len(user_input) < 50:
-            return user_input.capitalize()
+            return user_input
         print("Must be between six and 50 characters long")
         user_input = input(message).strip()
 
