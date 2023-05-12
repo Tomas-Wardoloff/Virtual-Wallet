@@ -52,8 +52,8 @@ def check_currency() -> str:
         9: ["Hong Kong Dollar", "HKD"],
         10: ["Swedish Krona", "SEK"]
     }
-    for index in range(1,11):
-        print(index, currencies[index][0])
+    for option, text in currencies.items():
+        print(f"[{option}] {text[0]}")
         
     while True:
         try:
