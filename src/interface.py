@@ -46,7 +46,7 @@ def get_categories(connection):
 def enter_transaction(connection, user_id: int):
     clear_shell()
     date = ch.check_date
-    amount = float(input("Amount: "))
+    amount = ch.check_number("float", "Amount: ")
     description = input("Description: ")
     category_id = select_category(connection)
 
@@ -66,7 +66,7 @@ def transaction_menu(connection, user_id: int):
 
         print("+------------------+\n| Transaction Menu |\n+------------------+")
         print_menu(MENU_TRANSACTIONS)
-        option = ch.check_int()
+        option = ch.check_number("int", "Select and option from the menu: ")
 
         if option == 0:
             break
@@ -157,7 +157,7 @@ def main():
         clear_shell()
         print("+----------------+\n| Virtual Wallet |\n+----------------+")
         print_menu(MENU_OPTIONS)
-        option = ch.check_int()
+        option = ch.check_number("int","Select and option from the menu: ")
 
         if option == 0:
             break

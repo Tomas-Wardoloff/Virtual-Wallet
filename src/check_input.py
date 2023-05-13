@@ -2,24 +2,38 @@ import re
 import datetime
 
 """
-    Prompt the user to enter an integer and validate its format.
+    Prompt the user to enter a number of a specified data type and validate the input.
 
-    Continuously prompts the user to enter an integer until a valid format is provided.
-    Uses a try-except block to catch the ValueError raised if the input cannot be converted to an integer.
-    Returns the validated integer.
+    Continuously prompts the user to enter a number until a valid format is provided.
+    Validates the input based on the specified data type: 'int' or 'float'.
+    Returns the validated number.
+
+    Args:
+        data_type (str): The data type to which the user input should be converted ('int' or 'float').
+        message (str): The message to display when prompting the user for input.
 
     Returns:
-        int: The validated integer.
+        int or float: The validated number.
+
+    Raises:
+        ValueError: If the input cannot be converted to the specified data type.
 
     Examples:
-        >>> check_int()
-        Select an option from the menu: 3
-        3
+        >>> check_number('int', 'Enter an integer: ')
+        Enter an integer: 42
+        42
+
+        >>> check_number('float', 'Enter a float: ')
+        Enter a float: 3.14
+        3.14
 """
-def check_int() -> int:
+def check_number(data_type: str, message: str):
     while True:
         try:
-            option = int(input("Select and option from the menu: "))
+            if data_type == "int":
+                option = int(input(message))
+            elif data_type == "float":
+                option = float(input(message))
             return option
         except ValueError:
             print("Invalid input. Please enter a valid integer.")
