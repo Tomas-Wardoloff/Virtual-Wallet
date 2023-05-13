@@ -3,30 +3,68 @@ import check_input as ch
 import database_actions as db
 
 MENU_OPTIONS = {1: "Log In", 2: "Sign Up", 0: "Exit"}
-MENU_TRANSACTIONS = {1: "Enter Transaction", 2: "Show Categories", 3: "Create Category", 4: "All Transactions"}
+MENU_TRANSACTIONS = {
+    1: "Enter Transaction",
+    2: "Show Categories",
+    3: "Create Category",
+    4: "All Transactions",
+}
 
 
 def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
-def transaction_menu(connection, user_id: int):
+def select_category():
+    pass
+
+
+def print_transactions(connection, user_id: int):
+    clear_shell()
     transaction_query = """
-        SELECT t.Date, t.Amount, t.Description, c.Name, w.Balance
+        SELECT t.Date, t.Amount, t.Description, c.Name
         FROM Transactions t
         JOIN Categories c ON t.CategoryId = c.CategoryId
-        JOIN Wallets w ON t.UserId = w.UserId
-        WHERE t.UserId = ?;
+        WHERE t.UserId = ? 
+        ORDER BY Date DESC;
     """
+    user_transactions = db.get_data(connection, transaction_query, (user_id,))
+    for transaction in user_transactions:
+        date, amount, description, category_name = transaction
+        print(
+            "| {:^} | ${:^} | {:^} | {:^} ".format(
+                date, amount, description, category_name
+            )
+        )
+
+
+def get_categories(connection):
+    query = "SELECT CategoryId, Name FROM Categories"
+    return db.get_data(connection, query, ())
+
+
+def enter_transaction(connection, user_id: int):
+    clear_shell()
+    date = input("Date (YYYY-MM-DD): ")
+    amount = float(input("Amount: "))
+    description = input("Description: ")
+    category_id = select_category(connection)
+
+    query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId) VALUES (?, ?, ?, ?, ?)"
+    params = (date, amount, description, user_id, category_id)
+    db.run_query(connection, query, params)
+
+    print("Transaction created")
+
+
+def transaction_menu(connection, user_id: int):
+    get_balance_query = "SELECT Balance FROM Wallets WHERE UserId=?;"
     while True:
         clear_shell()
-        
-        user_transactions = db.get_data(connection, transaction_query, (user_id,))
-        for transaction in user_transactions:
-            date, amount, description, category_name, balance = transaction
-            print(balance)
-            print("| {:^} | ${:^} | {:^} | {:^} | ".format(date, amount, description, category_name))
+        last_balance = db.get_data(connection, get_balance_query, (user_id,))[0][0]
+        print(last_balance)
 
+        print("+------------------+\n| Transaction Menu |\n+------------------+")
         print_menu(MENU_TRANSACTIONS)
         option = ch.check_int()
 
@@ -34,15 +72,19 @@ def transaction_menu(connection, user_id: int):
             break
         elif option in MENU_TRANSACTIONS:
             if option == 1:
-                pass
+                enter_transaction(connection, user_id)
             elif option == 2:
-                pass
+                clear_shell()
+                categories = get_categories(connection)
+                for category in categories:
+                    print(f"[{category[0]}]  {category[1]}")
             elif option == 3:
                 pass
             elif option == 4:
-                pass
+                print_transactions(connection, user_id)
         else:
             print("Invalid option")
+        input("\nPress Enter to continue...")
 
 
 def log_in_user(connection):
@@ -68,9 +110,11 @@ def log_in_user(connection):
             if db.get_data(connection, query, (user_id,))[0][0] == 0:
                 # If the user doesn't have a wallet, prompt for currency and create a wallet
                 clear_shell()
-                
+
                 currency = ch.check_currency()
-                query = f'INSERT INTO Wallets (Balance, Currency, UserId) VALUES (?, ?, ?);'
+                query = (
+                    f"INSERT INTO Wallets (Balance, Currency, UserId) VALUES (?, ?, ?);"
+                )
                 params = (float(0), currency, user_id)
                 db.run_query(connection, query, params)
 
@@ -91,7 +135,9 @@ def sign_up_user(connection):
         result = db.get_data(connection, query, (login_name, email))
 
         if result:
-            print(f"The username '{login_name}' or the email '{email}' is already in use. Please choose another one.")
+            print(
+                f"The username '{login_name}' or the email '{email}' is already in use. Please choose another one."
+            )
         else:
             # Insert data of the new user in the database
             query = f"INSERT INTO Users (LoginName, Email, Password) VALUES (?, ?, ?);"
@@ -100,8 +146,7 @@ def sign_up_user(connection):
     input("Registration successful")
 
 
-def print_menu(menu: dict): 
-    print("+----------------+\n| Virtual Wallet |\n+----------------+")
+def print_menu(menu: dict):
     for option, text in menu.items():
         print(f"[{option}] {text}")
 
@@ -110,6 +155,7 @@ def main():
     connection = db.connect_database("Virtual-Wallet.db")
     while True:
         clear_shell()
+        print("+----------------+\n| Virtual Wallet |\n+----------------+")
         print_menu(MENU_OPTIONS)
         option = ch.check_int()
 
