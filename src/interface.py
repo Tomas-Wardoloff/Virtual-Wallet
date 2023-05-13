@@ -45,7 +45,7 @@ def get_categories(connection):
 
 def enter_transaction(connection, user_id: int):
     clear_shell()
-    date = input("Date (YYYY-MM-DD): ")
+    date = ch.check_date
     amount = float(input("Amount: "))
     description = input("Description: ")
     category_id = select_category(connection)
