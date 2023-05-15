@@ -15,8 +15,19 @@ def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
-def select_category():
-    pass
+def select_category(connection) -> int:
+    categories = get_categories(connection)
+    print("These are the available categories:")
+    for category in categories:
+        print(f"[{category[0]}]  {category[1]}")
+        
+    while True:
+        category_id = ch.check_number("int", "Enter the category ID: ")
+        # Check if the category ID is valid
+        if any(category[0] == category_id for category in categories):
+            return category_id
+        else:
+            print("Category ID is not valid. Try Again")
 
 
 def print_transactions(connection, user_id: int):
@@ -45,15 +56,15 @@ def get_categories(connection):
 
 def enter_transaction(connection, user_id: int):
     clear_shell()
-    date = ch.check_date
+    date = ch.check_date()
     amount = ch.check_number("float", "Amount: ")
-    description = input("Description: ")
+    description = ch.check_len_user_input("Enter Description: ")
     category_id = select_category(connection)
 
     query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId) VALUES (?, ?, ?, ?, ?)"
     params = (date, amount, description, user_id, category_id)
     db.run_query(connection, query, params)
-
+    clear_shell()
     print("Transaction created")
 
 
@@ -126,9 +137,9 @@ def log_in_user(connection):
 def sign_up_user(connection):
     while True:
         clear_shell()
-        login_name = ch.check_user_name("Enter your username: ")
+        login_name = ch.check_len_user_input("Enter your username: ")
         email = ch.check_email()
-        password = ch.check_user_name("Enter your user password: ")
+        password = ch.check_len_user_input("Enter your user password: ")
 
         # Check if user name or the email is already taken
         query = f"SELECT 1 FROM Users WHERE LoginName=? OR Email=? LIMIT 1;"

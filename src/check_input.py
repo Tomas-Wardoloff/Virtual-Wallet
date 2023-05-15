@@ -58,9 +58,9 @@ def check_number(data_type: str, message: str):
         Enter your desired username: myusername
         'myusername'
 """
-def check_user_name(message: str) -> str:
+def check_len_user_input(message: str) -> str:
     user_input = input(
-        f"\n• Must be between 6 and 50 characters long\n{message}"
+        f"{message}\n• Must be between 6 and 50 characters long\n"
     ).strip()
     while True:
         if 3 < len(user_input) < 50:
@@ -88,7 +88,9 @@ def check_user_name(message: str) -> str:
 def check_email() -> str:
     while True:
         user_input = input("\n• your_name@example.com\nInsert your email: ").strip()
-        if bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)):
+        if bool(
+            re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)
+        ):
             return user_input
         else:
             print("Invalid input. Try again")
@@ -123,21 +125,22 @@ def check_currency() -> str:
         7: ["Swiss Franc", "CHF"],
         8: ["Chinese Yuan", "CNY"],
         9: ["Hong Kong Dollar", "HKD"],
-        10: ["Swedish Krona", "SEK"]
+        10: ["Swedish Krona", "SEK"],
     }
     for option, text in currencies.items():
         print(f"[{option}] {text[0]}")
-        
+
     while True:
         try:
             option = int(input("Enter the currency of your choice: "))
-            if option in list(range(1,11)):
+            if option in list(range(1, 11)):
                 return currencies[option][1]
             else:
                 print("Option out of range")
         except ValueError:
             print("Invalid input. Try again")
-            
+
+
 """
     Prompt the user for a date and validate that it is in the format 'YYYY-MM-DD'.
 
