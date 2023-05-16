@@ -1,4 +1,4 @@
-import database_actions as db
+import src.database_actions as db
 
 """
 This file is use to create the database of the project
@@ -47,5 +47,5 @@ if __name__ == "__main__":
 
     queries = [users_table, categories_table, transactions_table, wallets_table]
     for query in queries:
-        db.run_query(connection, query)
+        db.run_query(connection, query, ())
     connection.close()
