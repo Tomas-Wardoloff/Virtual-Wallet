@@ -63,9 +63,8 @@ def enter_transaction(connection, user_id: int):
 
     query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId) VALUES (?, ?, ?, ?, ?)"
     params = (date, amount, description, user_id, category_id)
-    db.run_query(connection, query, params)
     clear_shell()
-    print("Transaction created")
+    db.run_query(connection, query, params)
 
 
 def transaction_menu(connection, user_id: int):
