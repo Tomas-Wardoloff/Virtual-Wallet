@@ -29,6 +29,7 @@ if __name__ == "__main__":
         Date DATE,
         Amount DECIMAL(9,2),
         Description VARCHAR(250),
+        Type VARCHAR(7),
         UserId INT,
         CategoryId INT,
         FOREIGN KEY(UserId) REFERENCES Users(UserId),

@@ -8,11 +8,17 @@ MENU_TRANSACTIONS = {
     2: "Show Categories",
     3: "Create Category",
     4: "All Transactions",
+    0: "Exit"
 }
 
 
 def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
+
+
+def update_balance(connection, last_transaction: list, user_id: int) -> float:
+    get_balance_query = "SELECT Balance FROM Wallets WHERE UserId=?;"
+    last
 
 
 def select_category(connection) -> int:
@@ -54,17 +60,19 @@ def get_categories(connection):
     return db.get_data(connection, query, ())
 
 
-def enter_transaction(connection, user_id: int):
+def enter_transaction(connection, user_id: int) -> list:
     clear_shell()
     date = ch.check_date()
+    transaction_type = ch.check_transaction_type()
     amount = ch.check_number("float", "Amount: ")
     description = ch.check_len_user_input("Enter Description: ")
     category_id = select_category(connection)
 
-    query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId) VALUES (?, ?, ?, ?, ?)"
-    params = (date, amount, description, user_id, category_id)
+    query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId, Type) VALUES (?, ?, ?, ?, ?, ?)"
+    params = (date, amount, description, user_id, category_id, transaction_type)
     clear_shell()
     db.run_query(connection, query, params)
+    return [transaction_type, amount]
 
 
 def transaction_menu(connection, user_id: int):
@@ -72,7 +80,7 @@ def transaction_menu(connection, user_id: int):
     while True:
         clear_shell()
         last_balance = db.get_data(connection, get_balance_query, (user_id,))[0][0]
-        print(last_balance)
+        print(f"Actual balance: {last_balance}")
 
         print("+------------------+\n| Transaction Menu |\n+------------------+")
         print_menu(MENU_TRANSACTIONS)
@@ -82,7 +90,13 @@ def transaction_menu(connection, user_id: int):
             break
         elif option in MENU_TRANSACTIONS:
             if option == 1:
-                enter_transaction(connection, user_id)
+                last_transaction = enter_transaction(connection, user_id)
+                if last_transaction[0] == "Income":
+                    last_balance += last_transaction[1]
+                else:
+                    last_balance -= last_transaction[1]
+                update_balance_query = "UPDATE Wallets SET Balance = ? WHERE UserId = ?"
+                db.run_query(connection, update_balance_query, (last_balance, user_id))
             elif option == 2:
                 clear_shell()
                 categories = get_categories(connection)
@@ -153,7 +167,6 @@ def sign_up_user(connection):
             query = f"INSERT INTO Users (LoginName, Email, Password) VALUES (?, ?, ?);"
             db.run_query(connection, query, (login_name, email, password))
             break
-    input("Registration successful")
 
 
 def print_menu(menu: dict):

@@ -166,3 +166,11 @@ def check_date() -> str:
             return date_str
         except ValueError:
             print("Invalid date format. Try again.")
+            
+def check_transaction_type():
+    while True:
+        transaction_type = input("Enter transaction type (income or expense): ").capitalize()
+        if transaction_type in ['Income', 'Expense']:
+            return transaction_type
+        else:
+            print("Invalid transaction type. Plese enter 'expense' or 'income'.")
