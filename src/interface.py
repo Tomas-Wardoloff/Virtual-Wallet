@@ -27,8 +27,8 @@ def update_balance(connection, last_transaction, user_id):
     db.run_query(connection, update_balance_query, (last_balance, user_id))
 
 
-def select_category(connection) -> int:
-    categories = get_categories(connection)
+def select_category(connection, user_id) -> int:
+    categories = get_categories(connection, user_id)
     print("These are the available categories:")
     for category in categories:
         print(f"[{category[0]}]  {category[1]}")
@@ -61,9 +61,9 @@ def print_transactions(connection, user_id: int):
         )
 
 
-def get_categories(connection):
-    query = "SELECT CategoryId, Name FROM Categories"
-    return db.get_data(connection, query, ())
+def get_categories(connection, user_id):
+    query = "SELECT CategoryId, Name FROM Categories WHERE UserId = ? OR UserId = 0;"
+    return db.get_data(connection, query, (user_id, ))
 
 
 def enter_transaction(connection, user_id: int) -> list:
@@ -72,7 +72,7 @@ def enter_transaction(connection, user_id: int) -> list:
     transaction_type = ch.check_transaction_type()
     amount = ch.check_number("float", "Amount: ")
     description = ch.check_len_user_input("Enter Description: ")
-    category_id = select_category(connection)
+    category_id = select_category(connection, user_id)
 
     query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId, Type) VALUES (?, ?, ?, ?, ?, ?)"
     params = (date, amount, description, user_id, category_id, transaction_type)
@@ -99,7 +99,7 @@ def transaction_menu(connection, user_id: int):
                 update_balance(connection, last_transaction, user_id)
             elif option == 2:
                 clear_shell()
-                categories = get_categories(connection)
+                categories = get_categories(connection, user_id)
                 for category in categories:
                     print(f"[{category[0]}]  {category[1]}")
             elif option == 3:
