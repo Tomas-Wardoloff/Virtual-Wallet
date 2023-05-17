@@ -20,6 +20,8 @@ if __name__ == "__main__":
     CREATE TABLE Categories(
         CategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
         Name VARCHAR(50)
+        UserId int,
+        FOREIGN KEY(UserId) REFERENCES Users(UserId)
         );
     """
 
