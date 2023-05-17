@@ -8,7 +8,7 @@ MENU_TRANSACTIONS = {
     2: "Show Categories",
     3: "Create Category",
     4: "All Transactions",
-    0: "Exit"
+    0: "Exit",
 }
 
 
@@ -16,9 +16,15 @@ def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
-def update_balance(connection, last_transaction: list, user_id: int) -> float:
+def update_balance(connection, last_transaction, user_id):
     get_balance_query = "SELECT Balance FROM Wallets WHERE UserId=?;"
-    last
+    last_balance = db.get_data(connection, get_balance_query, (user_id,))[0][0]
+    if last_transaction[0] == "Income":
+        last_balance += last_transaction[1]
+    else:
+        last_balance -= last_transaction[1]
+    update_balance_query = "UPDATE Wallets SET Balance = ? WHERE UserId = ?"
+    db.run_query(connection, update_balance_query, (last_balance, user_id))
 
 
 def select_category(connection) -> int:
@@ -26,7 +32,7 @@ def select_category(connection) -> int:
     print("These are the available categories:")
     for category in categories:
         print(f"[{category[0]}]  {category[1]}")
-        
+
     while True:
         category_id = ch.check_number("int", "Enter the category ID: ")
         # Check if the category ID is valid
@@ -70,7 +76,6 @@ def enter_transaction(connection, user_id: int) -> list:
 
     query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId, Type) VALUES (?, ?, ?, ?, ?, ?)"
     params = (date, amount, description, user_id, category_id, transaction_type)
-    clear_shell()
     db.run_query(connection, query, params)
     return [transaction_type, amount]
 
@@ -91,12 +96,7 @@ def transaction_menu(connection, user_id: int):
         elif option in MENU_TRANSACTIONS:
             if option == 1:
                 last_transaction = enter_transaction(connection, user_id)
-                if last_transaction[0] == "Income":
-                    last_balance += last_transaction[1]
-                else:
-                    last_balance -= last_transaction[1]
-                update_balance_query = "UPDATE Wallets SET Balance = ? WHERE UserId = ?"
-                db.run_query(connection, update_balance_query, (last_balance, user_id))
+                update_balance(connection, last_transaction, user_id)
             elif option == 2:
                 clear_shell()
                 categories = get_categories(connection)
@@ -180,7 +180,7 @@ def main():
         clear_shell()
         print("+----------------+\n| Virtual Wallet |\n+----------------+")
         print_menu(MENU_OPTIONS)
-        option = ch.check_number("int","Select and option from the menu: ")
+        option = ch.check_number("int", "Select and option from the menu: ")
 
         if option == 0:
             break
