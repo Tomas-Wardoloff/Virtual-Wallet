@@ -8,6 +8,7 @@ MENU_TRANSACTIONS = {
     2: "Show Categories",
     3: "Create Category",
     4: "All Transactions",
+    0: "Exit",
 }
 
 
@@ -15,12 +16,23 @@ def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
-def select_category(connection) -> int:
-    categories = get_categories(connection)
+def update_balance(connection, last_transaction, user_id):
+    get_balance_query = "SELECT Balance FROM Wallets WHERE UserId=?;"
+    last_balance = db.get_data(connection, get_balance_query, (user_id,))[0][0]
+    if last_transaction[0] == "Income":
+        last_balance += last_transaction[1]
+    else:
+        last_balance -= last_transaction[1]
+    update_balance_query = "UPDATE Wallets SET Balance = ? WHERE UserId = ?"
+    db.run_query(connection, update_balance_query, (last_balance, user_id))
+
+
+def select_category(connection, user_id) -> int:
+    categories = get_categories(connection, user_id)
     print("These are the available categories:")
     for category in categories:
         print(f"[{category[0]}]  {category[1]}")
-        
+
     while True:
         category_id = ch.check_number("int", "Enter the category ID: ")
         # Check if the category ID is valid
@@ -49,22 +61,23 @@ def print_transactions(connection, user_id: int):
         )
 
 
-def get_categories(connection):
-    query = "SELECT CategoryId, Name FROM Categories"
-    return db.get_data(connection, query, ())
+def get_categories(connection, user_id):
+    query = "SELECT CategoryId, Name FROM Categories WHERE UserId = ? OR UserId = 0;"
+    return db.get_data(connection, query, (user_id, ))
 
 
-def enter_transaction(connection, user_id: int):
+def enter_transaction(connection, user_id: int) -> list:
     clear_shell()
     date = ch.check_date()
+    transaction_type = ch.check_transaction_type()
     amount = ch.check_number("float", "Amount: ")
     description = ch.check_len_user_input("Enter Description: ")
-    category_id = select_category(connection)
+    category_id = select_category(connection, user_id)
 
-    query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId) VALUES (?, ?, ?, ?, ?)"
-    params = (date, amount, description, user_id, category_id)
-    clear_shell()
+    query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId, Type) VALUES (?, ?, ?, ?, ?, ?)"
+    params = (date, amount, description, user_id, category_id, transaction_type)
     db.run_query(connection, query, params)
+    return [transaction_type, amount]
 
 
 def transaction_menu(connection, user_id: int):
@@ -72,7 +85,7 @@ def transaction_menu(connection, user_id: int):
     while True:
         clear_shell()
         last_balance = db.get_data(connection, get_balance_query, (user_id,))[0][0]
-        print(last_balance)
+        print(f"Actual balance: {last_balance}")
 
         print("+------------------+\n| Transaction Menu |\n+------------------+")
         print_menu(MENU_TRANSACTIONS)
@@ -82,10 +95,11 @@ def transaction_menu(connection, user_id: int):
             break
         elif option in MENU_TRANSACTIONS:
             if option == 1:
-                enter_transaction(connection, user_id)
+                last_transaction = enter_transaction(connection, user_id)
+                update_balance(connection, last_transaction, user_id)
             elif option == 2:
                 clear_shell()
-                categories = get_categories(connection)
+                categories = get_categories(connection, user_id)
                 for category in categories:
                     print(f"[{category[0]}]  {category[1]}")
             elif option == 3:
@@ -153,7 +167,6 @@ def sign_up_user(connection):
             query = f"INSERT INTO Users (LoginName, Email, Password) VALUES (?, ?, ?);"
             db.run_query(connection, query, (login_name, email, password))
             break
-    input("Registration successful")
 
 
 def print_menu(menu: dict):
@@ -167,7 +180,7 @@ def main():
         clear_shell()
         print("+----------------+\n| Virtual Wallet |\n+----------------+")
         print_menu(MENU_OPTIONS)
-        option = ch.check_number("int","Select and option from the menu: ")
+        option = ch.check_number("int", "Select and option from the menu: ")
 
         if option == 0:
             break

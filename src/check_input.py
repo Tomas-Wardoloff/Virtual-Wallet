@@ -1,7 +1,9 @@
 import re
 import datetime
 
-"""
+
+def check_number(data_type: str, message: str):
+    """
     Prompt the user to enter a number of a specified data type and validate the input.
 
     Continuously prompts the user to enter a number until a valid format is provided.
@@ -26,8 +28,7 @@ import datetime
         >>> check_number('float', 'Enter a float: ')
         Enter a float: 3.14
         3.14
-"""
-def check_number(data_type: str, message: str):
+    """
     while True:
         try:
             if data_type == "int":
@@ -39,7 +40,8 @@ def check_number(data_type: str, message: str):
             print("Invalid input. Please enter a valid integer.")
 
 
-"""
+def check_len_user_input(message: str) -> str:
+    """
     Prompt the user to enter a username within a specific length range.
 
     Displays a custom message to guide the user regarding the username requirements.
@@ -57,8 +59,7 @@ def check_number(data_type: str, message: str):
         • Must be between 6 and 50 characters long
         Enter your desired username: myusername
         'myusername'
-"""
-def check_len_user_input(message: str) -> str:
+    """
     user_input = input(
         f"{message}\n• Must be between 6 and 50 characters long\n"
     ).strip()
@@ -69,7 +70,8 @@ def check_len_user_input(message: str) -> str:
         user_input = input(message).strip()
 
 
-"""
+def check_email() -> str:
+    """
     Prompt the user to enter an email address and validate its format.
 
     Continuously prompts the user to enter an email address until a valid format is provided.
@@ -84,8 +86,7 @@ def check_len_user_input(message: str) -> str:
         • your_name@example.com
         Insert your email: example@example.com
         'example@example.com'
-"""
-def check_email() -> str:
+    """
     while True:
         user_input = input("\n• your_name@example.com\nInsert your email: ").strip()
         if bool(
@@ -96,7 +97,8 @@ def check_email() -> str:
             print("Invalid input. Try again")
 
 
-"""
+def check_currency() -> str:
+    """
     Prompt the user to select a currency from a predefined list.
 
     Displays a menu of currencies and prompts the user to enter their choice.
@@ -113,8 +115,7 @@ def check_email() -> str:
         ...
         Enter the currency of your choice: 2
         'EUR'
-"""
-def check_currency() -> str:
+    """
     currencies = {
         1: ["US Dollar", "USD"],
         2: ["Euro", "EUR"],
@@ -141,7 +142,8 @@ def check_currency() -> str:
             print("Invalid input. Try again")
 
 
-"""
+def check_date() -> str:
+    """
     Prompt the user for a date and validate that it is in the format 'YYYY-MM-DD'.
 
     This function continuously prompts the user to enter a date until a valid date in the format 'YYYY-MM-DD' is provided.
@@ -157,8 +159,7 @@ def check_currency() -> str:
         >>> check_date()
         Date (YYYY-MM-DD): 2023-05-13
         '2023-05-13'
-"""
-def check_date() -> str:
+    """
     while True:
         date_str = input("Date (YYYY-MM-DD): ")
         try:
@@ -166,3 +167,32 @@ def check_date() -> str:
             return date_str
         except ValueError:
             print("Invalid date format. Try again.")
+
+
+def check_transaction_type() -> str:
+    """
+    Prompt the user to enter a transaction type and validate it.
+
+    This function prompts the user to enter a transaction type ('income' or 'expense')
+    and continuously validates the input until a valid transaction type is provided.
+    The input is case-insensitive and will be capitalized.
+
+    Returns:
+        str: The validated transaction type, either 'Income' or 'Expense'.
+
+    Raises:
+        None
+
+    Examples:
+        >>> check_transaction_type()
+        Enter transaction type (income or expense): expense
+        'Expense'
+    """
+    while True:
+        transaction_type = input(
+            "Enter transaction type (income or expense): "
+        ).capitalize()
+        if transaction_type in ["Income", "Expense"]:
+            return transaction_type
+        else:
+            print("Invalid transaction type. Plese enter 'expense' or 'income'.")
