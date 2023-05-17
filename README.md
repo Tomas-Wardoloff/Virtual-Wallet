@@ -36,8 +36,8 @@ The database has four main tables: Users, Transactions, Categories and Wallets.
   The Users table will store information about each user, such as their login name, email and password. Each user will have a unique identifier, which will serve as the primary key for this table
 
 - **Categories**
-  This table only stores the information of the different categories that the users can use to identify their transactions, and like the user's table, it has a unique identifier.
-
+  This table only stores the information of the different categories that the users can use to identify their transactions, and like the user's table, it has a unique identifier. The users can create their own categories, which is why this table has a foreign key that references the Users table. The categories with UserId = 0 are accessible to all the users.
+  
 - **Transactions**
   This table store information about each transaction made by the users. This table will have two foreign keys, one references the User table so each transaction will be associated with a particular user, and the other one references the Categories table.
 

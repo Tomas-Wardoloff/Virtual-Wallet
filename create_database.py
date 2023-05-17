@@ -19,7 +19,7 @@ if __name__ == "__main__":
     categories_table = """
     CREATE TABLE Categories(
         CategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
-        Name VARCHAR(50)
+        Name VARCHAR(50),
         UserId int,
         FOREIGN KEY(UserId) REFERENCES Users(UserId)
         );
@@ -48,7 +48,29 @@ if __name__ == "__main__":
         FOREIGN KEY(UserId) REFERENCES Users(UserId)
         );"""
 
-    queries = [users_table, categories_table, transactions_table, wallets_table]
+    create_main_categories = """
+    INSERT INTO Categories (Name, UserId)
+    VALUES
+        ('Groceries', 0),
+        ('Utilities', 0),
+        ('Transportation', 0),
+        ('Housing', 0),
+        ('Eating Out', 0),
+        ('Entertainment', 0),
+        ('Clothing', 0),
+        ('Healthcare', 0),
+        ('Education', 0),
+        ('Miscellaneous', 0)
+    ;
+    """
+
+    queries = [
+        users_table,
+        categories_table,
+        transactions_table,
+        wallets_table,
+        create_main_categories,
+    ]
     for query in queries:
         db.run_query(connection, query, ())
     connection.close()
