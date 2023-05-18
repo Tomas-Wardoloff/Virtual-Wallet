@@ -1,4 +1,7 @@
 # Virtual Wallet
+![GitHub last commit](https://img.shields.io/github/last-commit/Tomas-Wardoloff/Virtual-Wallet?style=plastic)
+![GitHub](https://img.shields.io/github/license/Tomas-Wardoloff/Virtual-Wallet?color=informational&style=plastic)
+
 This is a personal project where I design a virtual wallet to track personal expenses and incomes. The main idea is to spend my time on something more important rather than playing League of Legends and learn during the process. 
 I am going to use Python 3.11 to build the application, Git and GitHub to keep track of the code, [sqlite3](https://docs.python.org/3/library/sqlite3.html) to create and manage the database, [pytest](https://docs.pytest.org/en/7.3.x/contents.html) to test the functions of the code, [coverage.py](https://coverage.readthedocs.io/en/7.2.3/#) to see how much of the code is being tested, [virtualenv](https://docs.python.org/3/library/venv.html) just to be more pythonic and keep a track of the packages that I am going to use and also Chatgpt to ask different business rules, functionalities and issues that came out during the process (which I am not sure to add or not).
 
