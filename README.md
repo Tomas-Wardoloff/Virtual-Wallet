@@ -48,7 +48,7 @@ The database has four main tables: Users, Transactions, Categories and Wallets.
   This table store a "summit" of the user's wallet. This one has a foreign key that references the User table and also stores information such as currency, balance and an identifier.
 
 <p align="center">
-   <img src="https://raw.githubusercontent.com/Tomas-Wardoloff/Virtual-Wallet/main/Database%20Diagram.png" alt="Database Diagram" width="600" height="400"/>
+   <img src="https://raw.githubusercontent.com/Tomas-Wardoloff/Virtual-Wallet/main/docs/imgs/Database%20Diagram.png" alt="Database Diagram" width="600" height="400"/>
 </p>
 
 ## Authors
