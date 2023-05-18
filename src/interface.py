@@ -16,6 +16,22 @@ def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
+def create_category(connection, user_id: int):
+    clear_shell()
+    all_categories = get_categories(connection, user_id)
+    all_categories_names = [category[1] for category in all_categories]
+    
+    while True:
+        category_name = input("Enter the category name: ").strip()
+        
+        if category_name in all_categories_names:
+            print("The category already exists. Try with other name.")
+        else:
+            query = "INSERT INTO Categories (Name, UserId) VALUES (?, ?)"       
+            db.run_query(connection, query, (category_name, user_id, ))
+            break
+
+
 def update_balance(connection, last_transaction, user_id):
     get_balance_query = "SELECT Balance FROM Wallets WHERE UserId=?;"
     last_balance = db.get_data(connection, get_balance_query, (user_id,))[0][0]
@@ -28,6 +44,7 @@ def update_balance(connection, last_transaction, user_id):
 
 
 def select_category(connection, user_id) -> int:
+    clear_shell()
     categories = get_categories(connection, user_id)
     print("These are the available categories:")
     for category in categories:
@@ -103,7 +120,7 @@ def transaction_menu(connection, user_id: int):
                 for category in categories:
                     print(f"[{category[0]}]  {category[1]}")
             elif option == 3:
-                pass
+                create_category(connection, user_id)
             elif option == 4:
                 print_transactions(connection, user_id)
         else:
