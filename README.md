@@ -1,4 +1,5 @@
 # Virtual Wallet
+![GitHub issues](https://img.shields.io/github/issues/Tomas-Wardoloff/Virtual-wallet?style=plastic)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Tomas-Wardoloff/Virtual-Wallet?style=plastic)
 ![GitHub](https://img.shields.io/github/license/Tomas-Wardoloff/Virtual-Wallet?color=informational&style=plastic)
 
