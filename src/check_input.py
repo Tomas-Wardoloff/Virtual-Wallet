@@ -35,9 +35,11 @@ def check_number(data_type: str, message: str):
                 option = int(input(message))
             elif data_type == "float":
                 option = float(input(message))
+            else:
+                raise ValueError
             return option
         except ValueError:
-            print("Invalid input. Please enter a valid integer.")
+            print(f"Invalid input. Please enter a valid {data_type}.")
 
 
 def check_len_user_input(message: str) -> str:
