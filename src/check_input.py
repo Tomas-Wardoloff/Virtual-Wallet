@@ -187,11 +187,11 @@ def check_transaction_type() -> str:
         Enter transaction type (income or expense): expense
         'Expense'
     """
-    while True:
-        transaction_type = input(
-            "Enter transaction type (income or expense): "
-        ).capitalize()
-        if transaction_type in ["Income", "Expense"]:
-            return transaction_type
-        else:
-            print("Invalid transaction type. Plese enter 'expense' or 'income'.")
+    
+    transaction_type = input(
+        "Enter transaction type (income or expense): "
+    ).capitalize()
+    if transaction_type in ["Income", "Expense"]:
+        return transaction_type
+    else:
+        print("Invalid transaction type. Plese enter 'expense' or 'income'.")
