@@ -29,17 +29,16 @@ def check_number(data_type: str, message: str):
         Enter a float: 3.14
         3.14
     """
-    while True:
-        try:
-            if data_type == "int":
-                option = int(input(message))
-            elif data_type == "float":
-                option = float(input(message))
-            else:
-                raise ValueError
-            return option
-        except ValueError:
-            print(f"Invalid input. Please enter a valid {data_type}.")
+    try:
+        if data_type == "int":
+            option = int(input(message))
+        elif data_type == "float":
+            option = float(input(message))
+        else:
+            raise ValueError
+        return option
+    except ValueError:
+        print(f"Invalid input. Please enter a valid {data_type}.")
 
 
 def check_len_user_input(message: str) -> str:
