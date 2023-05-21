@@ -132,15 +132,13 @@ def check_currency() -> str:
     for option, text in currencies.items():
         print(f"[{option}] {text[0]}")
 
-    while True:
-        try:
-            option = int(input("Enter the currency of your choice: "))
-            if option in list(range(1, 11)):
-                return currencies[option][1]
-            else:
-                print("Option out of range")
-        except ValueError:
-            print("Invalid input. Try again")
+    try:
+        option = int(input("Enter the currency of your choice: "))
+        if option in list(range(1, 11)):
+            return currencies[option][1]
+        raise ValueError
+    except ValueError:
+        print("Invalid input. Try again")
 
 
 def check_date() -> str:
