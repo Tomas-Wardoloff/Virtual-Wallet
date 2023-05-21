@@ -159,13 +159,13 @@ def check_date() -> str:
         Date (YYYY-MM-DD): 2023-05-13
         '2023-05-13'
     """
-    while True:
-        date_str = input("Date (YYYY-MM-DD): ")
-        try:
-            date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-            return date_str
-        except ValueError:
-            print("Invalid date format. Try again.")
+    
+    date_str = input("Date (YYYY-MM-DD): ")
+    try:
+        date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+        return date_str
+    except ValueError:
+        print("Invalid date format. Try again.")
 
 
 def check_transaction_type() -> str:
