@@ -29,6 +29,6 @@ def test_get_data_error():
     query = "SELECT * FROM NonExistentTable"
     
     # Ensure it raise an error
-    assert get_data(connection, query, ()) == None
+    assert get_data(connection, query, ()) is None
     
     connection.close()

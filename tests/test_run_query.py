@@ -35,6 +35,6 @@ def test_run_query_error():
     query = "INSERT INTO Test (id, name) VALUES (?, ?)"
     
     # Ensure it raise an error
-    assert run_query(connection, query, ())  == None
+    assert run_query(connection, query, ())  is None
     
     connection.close()
