@@ -52,6 +52,8 @@ def select_category(connection, user_id) -> int:
 
     while True:
         category_id = ch.check_number("int", "Enter the category ID: ")
+        while not category_id:
+            category_id = ch.check_number("int", "Enter the category ID: ")
         # Check if the category ID is valid
         if any(category[0] == category_id for category in categories):
             return category_id
@@ -85,10 +87,23 @@ def get_categories(connection, user_id):
 
 def enter_transaction(connection, user_id: int) -> list:
     clear_shell()
+    
     date = ch.check_date()
-    transaction_type = ch.check_transaction_type()
+    while not date:
+        date = ch.check_date()
+
+    transaction_type = ch.check_transaction_type()    
+    while not transaction_type:    
+        transaction_type = ch.check_transaction_type()
+    
     amount = ch.check_number("float", "Amount: ")
+    while not amount:
+        amount = ch.check_number("float", "Amount: ")
+    
     description = ch.check_len_user_input("Enter Description: ")
+    while not description:
+        description = ch.check_len_user_input("Enter Description: ")
+    
     category_id = select_category(connection, user_id)
 
     query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId, Type) VALUES (?, ?, ?, ?, ?, ?)"
@@ -106,7 +121,10 @@ def transaction_menu(connection, user_id: int):
 
         print("+------------------+\n| Transaction Menu |\n+------------------+")
         print_menu(MENU_TRANSACTIONS)
+        
         option = ch.check_number("int", "Select and option from the menu: ")
+        while not option:
+            option = ch.check_number("int", "Select and option from the menu: ")
 
         if option == 0:
             break
@@ -153,6 +171,9 @@ def log_in_user(connection):
                 clear_shell()
 
                 currency = ch.check_currency()
+                while not currency:
+                    currency = ch.check_currency()                    
+
                 query = (
                     f"INSERT INTO Wallets (Balance, Currency, UserId) VALUES (?, ?, ?);"
                 )
@@ -167,9 +188,16 @@ def log_in_user(connection):
 def sign_up_user(connection):
     while True:
         clear_shell()
+        
         login_name = ch.check_len_user_input("Enter your username: ")
-        email = ch.check_email()
         password = ch.check_len_user_input("Enter your user password: ")
+        while not login_name and password:
+            login_name = ch.check_len_user_input("Enter your username: ")
+            password = ch.check_len_user_input("Enter your user password: ")
+
+        email = ch.check_email()        
+        while not email:
+            email = ch.check_email()
 
         # Check if user name or the email is already taken
         query = f"SELECT 1 FROM Users WHERE LoginName=? OR Email=? LIMIT 1;"
@@ -197,8 +225,11 @@ def main():
         clear_shell()
         print("+----------------+\n| Virtual Wallet |\n+----------------+")
         print_menu(MENU_OPTIONS)
+        
         option = ch.check_number("int", "Select and option from the menu: ")
-
+        while not option:
+            option = ch.check_number("int", "Select and option from the menu: ")
+            
         if option == 0:
             break
         elif option in MENU_OPTIONS:
