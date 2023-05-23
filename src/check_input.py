@@ -87,14 +87,13 @@ def check_email() -> str:
         Insert your email: example@example.com
         'example@example.com'
     """
-    while True:
-        user_input = input("\n• your_name@example.com\nInsert your email: ").strip()
-        if bool(
-            re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)
-        ):
-            return user_input
-        else:
-            print("Invalid input. Try again")
+    user_input = input("\n• your_name@example.com\nInsert your email: ").strip()
+    if bool(
+        re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)
+    ):
+        return user_input
+    else:
+        print("Invalid input. Try again")
 
 
 def check_currency() -> str:
