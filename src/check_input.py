@@ -64,11 +64,10 @@ def check_len_user_input(message: str) -> str:
     user_input = input(
         f"{message}\n• Must be between 6 and 50 characters long\n"
     ).strip()
-    while True:
-        if 3 < len(user_input) < 50:
-            return user_input
-        print("Must be between six and 50 characters long")
-        user_input = input(message).strip()
+    if 3 < len(user_input) < 50:
+        return user_input
+    print("Must be between six and 50 characters long")
+    user_input = input(message).strip()
 
 
 def check_email() -> str:
