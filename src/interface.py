@@ -16,6 +16,22 @@ def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
+def create_category(connection, user_id: int):
+    clear_shell()
+    all_categories = get_categories(connection, user_id)
+    all_categories_names = [category[1] for category in all_categories]
+    
+    while True:
+        category_name = input("Enter the category name: ").strip()
+        
+        if category_name in all_categories_names:
+            print("The category already exists. Try with other name.")
+        else:
+            query = "INSERT INTO Categories (Name, UserId) VALUES (?, ?)"       
+            db.run_query(connection, query, (category_name, user_id, ))
+            break
+
+
 def update_balance(connection, last_transaction, user_id):
     get_balance_query = "SELECT Balance FROM Wallets WHERE UserId=?;"
     last_balance = db.get_data(connection, get_balance_query, (user_id,))[0][0]
@@ -28,6 +44,7 @@ def update_balance(connection, last_transaction, user_id):
 
 
 def select_category(connection, user_id) -> int:
+    clear_shell()
     categories = get_categories(connection, user_id)
     print("These are the available categories:")
     for category in categories:
@@ -35,6 +52,8 @@ def select_category(connection, user_id) -> int:
 
     while True:
         category_id = ch.check_number("int", "Enter the category ID: ")
+        while not category_id:
+            category_id = ch.check_number("int", "Enter the category ID: ")
         # Check if the category ID is valid
         if any(category[0] == category_id for category in categories):
             return category_id
@@ -68,10 +87,23 @@ def get_categories(connection, user_id):
 
 def enter_transaction(connection, user_id: int) -> list:
     clear_shell()
+    
     date = ch.check_date()
-    transaction_type = ch.check_transaction_type()
+    while not date:
+        date = ch.check_date()
+
+    transaction_type = ch.check_transaction_type()    
+    while not transaction_type:    
+        transaction_type = ch.check_transaction_type()
+    
     amount = ch.check_number("float", "Amount: ")
+    while not amount:
+        amount = ch.check_number("float", "Amount: ")
+    
     description = ch.check_len_user_input("Enter Description: ")
+    while not description:
+        description = ch.check_len_user_input("Enter Description: ")
+    
     category_id = select_category(connection, user_id)
 
     query = "INSERT INTO Transactions (Date, Amount, Description, UserId, CategoryId, Type) VALUES (?, ?, ?, ?, ?, ?)"
@@ -89,7 +121,10 @@ def transaction_menu(connection, user_id: int):
 
         print("+------------------+\n| Transaction Menu |\n+------------------+")
         print_menu(MENU_TRANSACTIONS)
+        
         option = ch.check_number("int", "Select and option from the menu: ")
+        while not option:
+            option = ch.check_number("int", "Select and option from the menu: ")
 
         if option == 0:
             break
@@ -103,7 +138,7 @@ def transaction_menu(connection, user_id: int):
                 for category in categories:
                     print(f"[{category[0]}]  {category[1]}")
             elif option == 3:
-                pass
+                create_category(connection, user_id)
             elif option == 4:
                 print_transactions(connection, user_id)
         else:
@@ -136,6 +171,9 @@ def log_in_user(connection):
                 clear_shell()
 
                 currency = ch.check_currency()
+                while not currency:
+                    currency = ch.check_currency()                    
+
                 query = (
                     f"INSERT INTO Wallets (Balance, Currency, UserId) VALUES (?, ?, ?);"
                 )
@@ -150,9 +188,16 @@ def log_in_user(connection):
 def sign_up_user(connection):
     while True:
         clear_shell()
+        
         login_name = ch.check_len_user_input("Enter your username: ")
-        email = ch.check_email()
         password = ch.check_len_user_input("Enter your user password: ")
+        while not login_name and password:
+            login_name = ch.check_len_user_input("Enter your username: ")
+            password = ch.check_len_user_input("Enter your user password: ")
+
+        email = ch.check_email()        
+        while not email:
+            email = ch.check_email()
 
         # Check if user name or the email is already taken
         query = f"SELECT 1 FROM Users WHERE LoginName=? OR Email=? LIMIT 1;"
@@ -180,8 +225,11 @@ def main():
         clear_shell()
         print("+----------------+\n| Virtual Wallet |\n+----------------+")
         print_menu(MENU_OPTIONS)
+        
         option = ch.check_number("int", "Select and option from the menu: ")
-
+        while not option:
+            option = ch.check_number("int", "Select and option from the menu: ")
+            
         if option == 0:
             break
         elif option in MENU_OPTIONS:

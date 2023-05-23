@@ -1,4 +1,5 @@
 project_env/
+__init__.py
 **/__pycache__/
 *.db
 test.py

@@ -29,15 +29,16 @@ def check_number(data_type: str, message: str):
         Enter a float: 3.14
         3.14
     """
-    while True:
-        try:
-            if data_type == "int":
-                option = int(input(message))
-            elif data_type == "float":
-                option = float(input(message))
-            return option
-        except ValueError:
-            print("Invalid input. Please enter a valid integer.")
+    try:
+        if data_type == "int":
+            option = int(input(message))
+        elif data_type == "float":
+            option = float(input(message))
+        else:
+            raise ValueError
+        return option
+    except ValueError:
+        print(f"Invalid input. Please enter a valid {data_type}.")
 
 
 def check_len_user_input(message: str) -> str:
@@ -63,11 +64,10 @@ def check_len_user_input(message: str) -> str:
     user_input = input(
         f"{message}\n• Must be between 6 and 50 characters long\n"
     ).strip()
-    while True:
-        if 3 < len(user_input) < 50:
-            return user_input
-        print("Must be between six and 50 characters long")
-        user_input = input(message).strip()
+    if 3 < len(user_input) < 50:
+        return user_input
+    print("Must be between six and 50 characters long")
+    user_input = input(message).strip()
 
 
 def check_email() -> str:
@@ -87,14 +87,13 @@ def check_email() -> str:
         Insert your email: example@example.com
         'example@example.com'
     """
-    while True:
-        user_input = input("\n• your_name@example.com\nInsert your email: ").strip()
-        if bool(
-            re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)
-        ):
-            return user_input
-        else:
-            print("Invalid input. Try again")
+    user_input = input("\n• your_name@example.com\nInsert your email: ").strip()
+    if bool(
+        re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)
+    ):
+        return user_input
+    else:
+        print("Invalid input. Try again")
 
 
 def check_currency() -> str:
@@ -131,15 +130,13 @@ def check_currency() -> str:
     for option, text in currencies.items():
         print(f"[{option}] {text[0]}")
 
-    while True:
-        try:
-            option = int(input("Enter the currency of your choice: "))
-            if option in list(range(1, 11)):
-                return currencies[option][1]
-            else:
-                print("Option out of range")
-        except ValueError:
-            print("Invalid input. Try again")
+    try:
+        option = int(input("Enter the currency of your choice: "))
+        if option in list(range(1, 11)):
+            return currencies[option][1]
+        raise ValueError
+    except ValueError:
+        print("Invalid input. Try again")
 
 
 def check_date() -> str:
@@ -160,13 +157,13 @@ def check_date() -> str:
         Date (YYYY-MM-DD): 2023-05-13
         '2023-05-13'
     """
-    while True:
-        date_str = input("Date (YYYY-MM-DD): ")
-        try:
-            date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-            return date_str
-        except ValueError:
-            print("Invalid date format. Try again.")
+    
+    date_str = input("Date (YYYY-MM-DD): ")
+    try:
+        date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+        return date_str
+    except ValueError:
+        print("Invalid date format. Try again.")
 
 
 def check_transaction_type() -> str:
@@ -188,11 +185,11 @@ def check_transaction_type() -> str:
         Enter transaction type (income or expense): expense
         'Expense'
     """
-    while True:
-        transaction_type = input(
-            "Enter transaction type (income or expense): "
-        ).capitalize()
-        if transaction_type in ["Income", "Expense"]:
-            return transaction_type
-        else:
-            print("Invalid transaction type. Plese enter 'expense' or 'income'.")
+    
+    transaction_type = input(
+        "Enter transaction type (income or expense): "
+    ).capitalize()
+    if transaction_type in ["Income", "Expense"]:
+        return transaction_type
+    else:
+        print("Invalid transaction type. Plese enter 'expense' or 'income'.")
