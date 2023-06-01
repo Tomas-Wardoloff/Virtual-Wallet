@@ -10,7 +10,7 @@ on:
 
 jobs:
     test:
-        runs-on: ubuntu-last
+        runs-on: ubuntu-lastest
         defaults:
             run:
                 working-directory: ./tests/
@@ -19,7 +19,7 @@ jobs:
                 python-version: [3.11.2]
         env:
             MODE: "dev"
-            
+
         steps:
             - uses: actions/checkout@v3
             
