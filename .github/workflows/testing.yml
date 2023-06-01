@@ -34,4 +34,4 @@ jobs:
                 path: "docs/build/requirements.txt"
         
             - name: Test App code
-              run: pytest ./tests/
+              run: pytest .\tests\
