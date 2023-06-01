@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         defaults:
             run:
-                working-directory: ./tests/
+                working-directory: ./src/
         strategy:
             matrix:
                 python-version: [3.11.2]
@@ -34,4 +34,4 @@ jobs:
                 path: "docs/build/requirements.txt"
         
             - name: Test App code
-              run: pytest
+              run: pytest ./tests/
