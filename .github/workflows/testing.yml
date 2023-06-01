@@ -16,7 +16,10 @@ jobs:
                 working-directory: ./tests/
         strategy:
             matrix:
-                python-version: [3.11]
+                python-version: [3.11.2]
+        env:
+            MODE: "dev"
+            
         steps:
             - uses: actions/checkout@v3
             
@@ -32,4 +35,3 @@ jobs:
             
             - name: Test App code
               run: pytest
-
