@@ -5,9 +5,11 @@ import database_actions as db
 MENU_OPTIONS = {1: "Log In", 2: "Sign Up", 0: "Exit"}
 MENU_TRANSACTIONS = {
     1: "Enter Transaction",
-    2: "Show Categories",
-    3: "Create Category",
-    4: "All Transactions",
+    2: "Create Category",
+    3: "Show Transactions by category",
+    4: "Show Transactions by date",
+    5: "Show Categories",
+    6: "Show Transactions",
     0: "Exit",
 }
 
@@ -15,6 +17,30 @@ MENU_TRANSACTIONS = {
 def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
+
+def get_transactions_by_category(connection, user_id):
+    category_id = select_category(connection, user_id)
+    clear_shell()
+    query = """
+        SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
+        FROM Transactions t
+        JOIN Categories c ON t.CategoryId = c.CategoryId
+        WHERE t.UserId = ? AND t.CategoryId = ?
+        ORDER BY Date DESC;
+    """
+    transactions_by_date = db.get_data(connection, query, (user_id, category_id))
+    if transactions_by_date == []:
+        print("There user has no transactions of that category")
+    else:
+        for transaction in transactions_by_date:
+            date, amount, description, transaction_type, category_name = transaction
+            print(
+                "| {:^} | ${:^} | {:^} | {:^} | {:^}".format(
+                    date, amount, description, transaction_type, category_name
+                )
+            )
+    input("\nPress Enter to continue...")
+    
 
 def create_category(connection, user_id: int):
     clear_shell()
@@ -64,7 +90,7 @@ def select_category(connection, user_id) -> int:
 def print_transactions(connection, user_id: int):
     clear_shell()
     transaction_query = """
-        SELECT t.Date, t.Amount, t.Description, c.Name
+        SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
         FROM Transactions t
         JOIN Categories c ON t.CategoryId = c.CategoryId
         WHERE t.UserId = ? 
@@ -72,10 +98,10 @@ def print_transactions(connection, user_id: int):
     """
     user_transactions = db.get_data(connection, transaction_query, (user_id,))
     for transaction in user_transactions:
-        date, amount, description, category_name = transaction
+        date, amount, description, transaction_type, category_name = transaction
         print(
-            "| {:^} | ${:^} | {:^} | {:^} ".format(
-                date, amount, description, category_name
+            "| {:^} | ${:^} | {:^} | {:^} | {:^}".format(
+                date, amount, description, transaction_type, category_name
             )
         )
 
@@ -133,13 +159,17 @@ def transaction_menu(connection, user_id: int):
                 last_transaction = enter_transaction(connection, user_id)
                 update_balance(connection, last_transaction, user_id)
             elif option == 2:
+                create_category(connection, user_id)
+            elif option == 3:
+                pass
+            elif option == 4:
+                pass
+            elif option == 5:
                 clear_shell()
                 categories = get_categories(connection, user_id)
                 for category in categories:
                     print(f"[{category[0]}]  {category[1]}")
-            elif option == 3:
-                create_category(connection, user_id)
-            elif option == 4:
+            elif option == 6:
                 print_transactions(connection, user_id)
         else:
             print("Invalid option")
