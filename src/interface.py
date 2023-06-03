@@ -18,6 +18,39 @@ def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
+def print_transactions(transactions: list):
+    print("| {:^10} | {:^10} | {:^20} | {:^10} | {:^10} |".format(
+        "Date", "Amount", "Description", "Type", "Category"
+    ))
+    print("-" * 76)
+    
+    for transaction in transactions:
+        date, amount, description, transaction_type, category_name = transaction
+        print("| {:^10} | ${:^10} | {:^20} | {:^10} | {:^10} |".format(
+            date, amount, description, transaction_type, category_name
+        ))
+
+
+def get_transactions_by_date(connection, user_id):
+    clear_shell()
+    selected_date = ch.check_date()
+    query = """
+        SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
+        FROM Transactions t
+        JOIN Categories c ON t.CategoryId = c.CategoryId
+        WHERE t.UserId = ? AND t.Date = ?
+        ORDER BY Date DESC;
+    """
+    transactions_by_date = db.get_data(connection, query, (user_id, selected_date))
+    
+    if not transactions_by_date:
+        print("The user has no transactions on that date")
+    else:
+        print_transactions(transactions_by_date)
+    
+    input("\nPress Enter to continue...")
+    
+
 def get_transactions_by_category(connection, user_id):
     category_id = select_category(connection, user_id)
     clear_shell()
@@ -28,17 +61,14 @@ def get_transactions_by_category(connection, user_id):
         WHERE t.UserId = ? AND t.CategoryId = ?
         ORDER BY Date DESC;
     """
-    transactions_by_date = db.get_data(connection, query, (user_id, category_id))
-    if transactions_by_date == []:
-        print("There user has no transactions of that category")
+    
+    transactions_by_category = db.get_data(connection, query, (user_id, category_id))
+    
+    if not transactions_by_category:
+        print("The user has no transactions of that category")
     else:
-        for transaction in transactions_by_date:
-            date, amount, description, transaction_type, category_name = transaction
-            print(
-                "| {:^} | ${:^} | {:^} | {:^} | {:^}".format(
-                    date, amount, description, transaction_type, category_name
-                )
-            )
+        print_transactions(transactions_by_category)
+        
     input("\nPress Enter to continue...")
     
 
@@ -85,25 +115,6 @@ def select_category(connection, user_id) -> int:
             return category_id
         else:
             print("Category ID is not valid. Try Again")
-
-
-def print_transactions(connection, user_id: int):
-    clear_shell()
-    transaction_query = """
-        SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
-        FROM Transactions t
-        JOIN Categories c ON t.CategoryId = c.CategoryId
-        WHERE t.UserId = ? 
-        ORDER BY Date DESC;
-    """
-    user_transactions = db.get_data(connection, transaction_query, (user_id,))
-    for transaction in user_transactions:
-        date, amount, description, transaction_type, category_name = transaction
-        print(
-            "| {:^} | ${:^} | {:^} | {:^} | {:^}".format(
-                date, amount, description, transaction_type, category_name
-            )
-        )
 
 
 def get_categories(connection, user_id):
@@ -161,7 +172,7 @@ def transaction_menu(connection, user_id: int):
             elif option == 2:
                 create_category(connection, user_id)
             elif option == 3:
-                pass
+                get_transactions_by_category(connection, user_id)
             elif option == 4:
                 pass
             elif option == 5:
@@ -170,7 +181,15 @@ def transaction_menu(connection, user_id: int):
                 for category in categories:
                     print(f"[{category[0]}]  {category[1]}")
             elif option == 6:
-                print_transactions(connection, user_id)
+                transaction_query = """
+                    SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
+                    FROM Transactions t
+                    JOIN Categories c ON t.CategoryId = c.CategoryId
+                    WHERE t.UserId = ? 
+                    ORDER BY Date DESC;
+                """
+                user_transactions = db.get_data(connection, transaction_query, (user_id,))
+                print_transactions(user_transactions)
         else:
             print("Invalid option")
         input("\nPress Enter to continue...")
