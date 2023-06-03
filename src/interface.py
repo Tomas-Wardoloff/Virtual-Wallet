@@ -78,7 +78,7 @@ def select_category(connection, user_id) -> int:
 
     while True:
         category_id = ch.check_number("int", "Enter the category ID: ")
-        while not category_id:
+        while not category_id and category_id != 0:
             category_id = ch.check_number("int", "Enter the category ID: ")
         # Check if the category ID is valid
         if any(category[0] == category_id for category in categories):
@@ -123,7 +123,7 @@ def enter_transaction(connection, user_id: int) -> list:
         transaction_type = ch.check_transaction_type()
     
     amount = ch.check_number("float", "Amount: ")
-    while not amount:
+    while not amount and amount != 0.0:
         amount = ch.check_number("float", "Amount: ")
     
     description = ch.check_len_user_input("Enter Description: ")
@@ -149,12 +149,12 @@ def transaction_menu(connection, user_id: int):
         print_menu(MENU_TRANSACTIONS)
         
         option = ch.check_number("int", "Select and option from the menu: ")
-        while not option:
+        while not option and option != 0:
             option = ch.check_number("int", "Select and option from the menu: ")
 
-        if option == 0:
-            break
-        elif option in MENU_TRANSACTIONS:
+        if option in MENU_TRANSACTIONS:
+            if option == 0:
+                break
             if option == 1:
                 last_transaction = enter_transaction(connection, user_id)
                 update_balance(connection, last_transaction, user_id)
@@ -257,13 +257,13 @@ def main():
         print_menu(MENU_OPTIONS)
         
         option = ch.check_number("int", "Select and option from the menu: ")
-        while not option:
+        while not option and option != 0:
             option = ch.check_number("int", "Select and option from the menu: ")
-            
-        if option == 0:
-            break
-        elif option in MENU_OPTIONS:
-            if option == 1:
+
+        if option in MENU_OPTIONS:
+            if option == 0:
+                break
+            elif option == 1:
                 log_in_user(connection)
             elif option == 2:
                 sign_up_user(connection)
