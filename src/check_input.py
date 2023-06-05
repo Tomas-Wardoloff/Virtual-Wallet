@@ -1,5 +1,5 @@
-import re
 import datetime
+import re
 
 
 def check_number(data_type: str, message: str):
