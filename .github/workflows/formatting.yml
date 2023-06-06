@@ -19,6 +19,11 @@ jobs:
                 python-version: [3.11.2]
         steps:
             - uses: actions/checkout@v3
+            
+            - uses: actions/checkout@master
+              with:
+                persist-credentials: false
+                fetch-depth: 0
 
             - name: Set up python
               uses: actions/setup-python@v4
@@ -37,9 +42,10 @@ jobs:
             - name: Sort imports with isort
               run: isort .
 
-            - name: Commit changes
-              uses: EndBug/add-and-commit@v4
+            - name: Commit & Push 
+              uses: actions-js/push@master
               with:
+                github_token: ${{ secrets.GITHUB_TOKEN}}
                 author_name: ${{ github.actor }}
                 author_email: ${{ github.actor }}@users.noreply.github.com
                 message: "Format code with black"
