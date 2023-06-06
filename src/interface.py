@@ -3,7 +3,8 @@ import os
 import check_input as ch
 import database_actions as db
 
-MENU_OPTIONS = {1: "Log In", 2: "Sign Up", 0: "Exit"}
+MENU_OPTIONS = {1: "Log In", 2: "Sign Up", 
+                0: "Exit"}
 MENU_TRANSACTIONS = {1: "Enter Transaction", 2: "Show Categories", 3: "Create Category", 4: "All Transactions", 
                      0: "Exit",}
 
