@@ -16,8 +16,12 @@ jobs:
                 python-version: [3.11.2]
         
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
+            - uses: actions/checkout@v3
+            
+            - uses: actions/checkout@master
+              with:
+                persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+                fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
         
             - name: Set up python
               uses: actions/setup-python@v4
@@ -35,25 +39,8 @@ jobs:
             - name: Sort imports with isort
               run: isort .
 
-            - name: Commit changes
-              run: |
-                git config --global user.name "Tomas-Wardoloff"
-                git config --global user.email "tomaswardoloff@gmail.com"
-                git add .
-                git commit -m "Apply code formatting"
-
-            - name: Push changes
-              uses: EndBug/add-and-commit@v4
+            - name: Commit & Push changes
+              uses: Andro999b/push@v1.3
               with:
-                branch: format-code
-                author_name: ${{ github.actor }}
-                author_email: ${{ github.actor }}@users.noreply.github.com
-                token: ${{ secrets.GITHUB_TOKEN }}
+                github_token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Create pull request
-              uses: peter-evans/create-pull-request@v3
-              with:
-                token: ${{ secrets.GITHUB_TOKEN }}
-                branch: format-code
-                title: "Code Formatting"
-                body: "Apply code formatting using black and isort"
