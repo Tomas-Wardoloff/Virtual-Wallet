@@ -38,5 +38,19 @@ jobs:
             - name: Sort imports with isort
               run: isort .
 
-            - name: Create Pull Request
-              uses: peter-evans/create-pull-request@v5
+            - name: Run the Action
+              uses: devops-infra/action-pull-request@v0.5.5
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                source_branch: development
+                target_branch: main
+                title: My pull request
+                body: "**Automated pull request** Format Code"
+                reviewer: octocat
+                assignee: octocat
+                label: enhancement
+                draft: true
+                new_string: "** Automatic pull request**"
+                get_diff: true
+                ignore_users: "dependabot"
+                allow_no_diff: false
