@@ -1,4 +1,7 @@
-import src.database_actions as db
+import sys
+
+sys.path.append("src")
+import database_actions as db
 
 """
 This file is use to create the database of the project
