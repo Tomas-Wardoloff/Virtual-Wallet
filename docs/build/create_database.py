@@ -12,7 +12,7 @@ if __name__ == "__main__":
         UserId INTEGER PRIMARY KEY AUTOINCREMENT,
         LoginName VARCHAR(50),
         Email VARCHAR(50),
-        Password VARCHAR(50)
+        Password VARCHAR(256)
         );
     """
 
