@@ -4,13 +4,74 @@ import check_input as ch
 import database_actions as db
 
 MENU_OPTIONS = {1: "Log In", 2: "Sign Up", 0: "Exit"}
-MENU_TRANSACTIONS = {1: "Enter Transaction", 2: "Show Categories", 3: "Create Category", 4: "All Transactions", 
-                     0: "Exit",}
+MENU_TRANSACTIONS = {
+    1: "Enter Transaction",
+    2: "Create Category",
+    3: "Show Transactions by category",
+    4: "Show Transactions by date",
+    5: "Show Categories",
+    6: "Show Transactions",
+    0: "Exit",
+}
 
 
 def clear_shell():
     return os.system("cls" if os.name == "nt" else "clear")
 
+
+def print_transactions(transactions: list):
+    print("| {:^10} | {:^10} | {:^20} | {:^10} | {:^10} |".format(
+        "Date", "Amount", "Description", "Type", "Category"
+    ))
+    print("-" * 76)
+    
+    for transaction in transactions:
+        date, amount, description, transaction_type, category_name = transaction
+        print("| {:^10} | ${:^10} | {:^20} | {:^10} | {:^10} |".format(
+            date, amount, description, transaction_type, category_name
+        ))
+
+
+def get_transactions_by_date(connection, user_id):
+    clear_shell()
+    selected_date = ch.check_date()
+    query = """
+        SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
+        FROM Transactions t
+        JOIN Categories c ON t.CategoryId = c.CategoryId
+        WHERE t.UserId = ? AND t.Date = ?
+        ORDER BY Date DESC;
+    """
+    transactions_by_date = db.get_data(connection, query, (user_id, selected_date))
+    
+    if not transactions_by_date:
+        print("The user has no transactions on that date")
+    else:
+        print_transactions(transactions_by_date)
+    
+    input("\nPress Enter to continue...")
+    
+
+def get_transactions_by_category(connection, user_id):
+    category_id = select_category(connection, user_id)
+    clear_shell()
+    query = """
+        SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
+        FROM Transactions t
+        JOIN Categories c ON t.CategoryId = c.CategoryId
+        WHERE t.UserId = ? AND t.CategoryId = ?
+        ORDER BY Date DESC;
+    """
+    
+    transactions_by_category = db.get_data(connection, query, (user_id, category_id))
+    
+    if not transactions_by_category:
+        print("The user has no transactions of that category")
+    else:
+        print_transactions(transactions_by_category)
+        
+    input("\nPress Enter to continue...")
+    
 
 def create_category(connection, user_id: int):
     clear_shell()
@@ -48,32 +109,13 @@ def select_category(connection, user_id) -> int:
 
     while True:
         category_id = ch.check_number("int", "Enter the category ID: ")
-        while not category_id:
+        while not category_id and category_id != 0:
             category_id = ch.check_number("int", "Enter the category ID: ")
         # Check if the category ID is valid
         if any(category[0] == category_id for category in categories):
             return category_id
         else:
             print("Category ID is not valid. Try Again")
-
-
-def print_transactions(connection, user_id: int):
-    clear_shell()
-    transaction_query = """
-        SELECT t.Date, t.Amount, t.Description, c.Name
-        FROM Transactions t
-        JOIN Categories c ON t.CategoryId = c.CategoryId
-        WHERE t.UserId = ? 
-        ORDER BY Date DESC;
-    """
-    user_transactions = db.get_data(connection, transaction_query, (user_id,))
-    for transaction in user_transactions:
-        date, amount, description, category_name = transaction
-        print(
-            "| {:^} | ${:^} | {:^} | {:^} ".format(
-                date, amount, description, category_name
-            )
-        )
 
 
 def get_categories(connection, user_id):
@@ -93,7 +135,7 @@ def enter_transaction(connection, user_id: int) -> list:
         transaction_type = ch.check_transaction_type()
     
     amount = ch.check_number("float", "Amount: ")
-    while not amount:
+    while not amount and amount != 0.0:
         amount = ch.check_number("float", "Amount: ")
     
     description = ch.check_len_user_input("Enter Description: ")
@@ -119,24 +161,36 @@ def transaction_menu(connection, user_id: int):
         print_menu(MENU_TRANSACTIONS)
         
         option = ch.check_number("int", "Select and option from the menu: ")
-        while not option:
+        while not option and option != 0:
             option = ch.check_number("int", "Select and option from the menu: ")
 
-        if option == 0:
-            break
-        elif option in MENU_TRANSACTIONS:
+        if option in MENU_TRANSACTIONS:
+            if option == 0:
+                break
             if option == 1:
                 last_transaction = enter_transaction(connection, user_id)
                 update_balance(connection, last_transaction, user_id)
             elif option == 2:
+                create_category(connection, user_id)
+            elif option == 3:
+                get_transactions_by_category(connection, user_id)
+            elif option == 4:
+                pass
+            elif option == 5:
                 clear_shell()
                 categories = get_categories(connection, user_id)
                 for category in categories:
                     print(f"[{category[0]}]  {category[1]}")
-            elif option == 3:
-                create_category(connection, user_id)
-            elif option == 4:
-                print_transactions(connection, user_id)
+            elif option == 6:
+                transaction_query = """
+                    SELECT t.Date, t.Amount, t.Description, t.Type, c.Name
+                    FROM Transactions t
+                    JOIN Categories c ON t.CategoryId = c.CategoryId
+                    WHERE t.UserId = ? 
+                    ORDER BY Date DESC;
+                """
+                user_transactions = db.get_data(connection, transaction_query, (user_id,))
+                print_transactions(user_transactions)
         else:
             print("Invalid option")
         input("\nPress Enter to continue...")
@@ -149,7 +203,6 @@ def log_in_user(connection):
     if db.get_data(connection, query, ())[0][0] > 0:
         login_name = input("Enter username: ").strip()
         password = input("Enter user password: ").strip()
-
         hashed_password = ch.hash_password(password)
         
         # Check if the username and password match a user in the database
@@ -226,13 +279,13 @@ def main():
         print_menu(MENU_OPTIONS)
         
         option = ch.check_number("int", "Select and option from the menu: ")
-        while not option:
+        while not option and option != 0:
             option = ch.check_number("int", "Select and option from the menu: ")
-            
-        if option == 0:
-            break
-        elif option in MENU_OPTIONS:
-            if option == 1:
+
+        if option in MENU_OPTIONS:
+            if option == 0:
+                break
+            elif option == 1:
                 log_in_user(connection)
             elif option == 2:
                 sign_up_user(connection)
