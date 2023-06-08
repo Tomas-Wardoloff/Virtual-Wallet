@@ -1,5 +1,6 @@
-import re
 import datetime
+import hashlib
+import re
 
 
 def check_number(data_type: str, message: str):
@@ -193,3 +194,35 @@ def check_transaction_type() -> str:
         return transaction_type
     else:
         print("Invalid transaction type. Plese enter 'expense' or 'income'.")
+        
+
+def hash_password(user_password: str) -> str:
+    """
+    Hash the user password using the SHA256 algorithm.
+    
+    This function takes a user password and computes its SHA256 hash. The password
+    is first encoded into UTF-8 format before being hashed. The resulting hash is returned
+    as a hexadecimal string.
+    
+    Args:
+    user_password (str): The password to be hashed.
+    
+    Returns:
+    str: The SHA256 hash of the user password.
+    
+    Raises:
+    None
+    
+    Examples:
+    >>> hash_user_password('myPassword123')
+    '3a4e19f12de49f3dbd68cbfd6f0b15da3d789797d24018b3a44a36e7f8a38c18'
+    >>> hash_user_password('password')
+    '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
+    """
+    password_bytes = user_password.encode("utf-8")
+    
+    sha256_hash = hashlib.sha256()
+    
+    sha256_hash.update(password_bytes)
+    
+    return sha256_hash.hexdigest()

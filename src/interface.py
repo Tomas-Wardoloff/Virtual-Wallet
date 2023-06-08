@@ -1,4 +1,5 @@
 import os
+
 import check_input as ch
 import database_actions as db
 
@@ -202,10 +203,11 @@ def log_in_user(connection):
     if db.get_data(connection, query, ())[0][0] > 0:
         login_name = input("Enter username: ").strip()
         password = input("Enter user password: ").strip()
-
+        hashed_password = ch.hash_password(password)
+        
         # Check if the username and password match a user in the database
         query = f"SELECT * FROM Users WHERE LoginName=? AND Password=? LIMIT 1;"
-        params = (login_name, password)
+        params = (login_name, hashed_password)
         if db.get_data(connection, query, params) == []:
             print(f"Incorrect username or password")
         else:
@@ -259,7 +261,8 @@ def sign_up_user(connection):
         else:
             # Insert data of the new user in the database
             query = f"INSERT INTO Users (LoginName, Email, Password) VALUES (?, ?, ?);"
-            db.run_query(connection, query, (login_name, email, password))
+            hashed_password = ch.hash_password(password)
+            db.run_query(connection, query, (login_name, email, hashed_password))
             break
 
 
