@@ -9,6 +9,7 @@ I am going to use Python 3.11 to build the application, Git and GitHub to keep t
 
 ## Table of contents
 - [Description of the project](#description-of-the-project)
+- [Usage](#usage)
 - [Database](#database)
 - [Authors](#authors)
 
@@ -30,6 +31,15 @@ I am using Python to create this virtual wallet that allows users to enter their
 3. **Transaction analysis**:
 
    The application shows the user an analysis of their transactions to have a better understanding of their spending and saving habits. The application offer charts and statistics to help the user see how their money is being spent.
+
+## Usage
+
+To set up the project, the only thing you have to do is to create the database structure before using the app.
+Run the following command to create the database:
+```bash
+ python .\docs\build\create_database.py
+```
+And then execute the ```.\src\interface.py``` file, and you are ready to go!!
 
 ## Database
 
