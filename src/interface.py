@@ -49,8 +49,6 @@ def get_transactions_by_date(connection, user_id):
     else:
         print_transactions(transactions_by_date)
     
-    input("\nPress Enter to continue...")
-    
 
 def get_transactions_by_category(connection, user_id):
     category_id = select_category(connection, user_id)
@@ -69,8 +67,6 @@ def get_transactions_by_category(connection, user_id):
         print("The user has no transactions of that category")
     else:
         print_transactions(transactions_by_category)
-        
-    input("\nPress Enter to continue...")
     
 
 def create_category(connection, user_id: int):
