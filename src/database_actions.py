@@ -2,11 +2,11 @@ import sqlite3 as sql
 from sqlite3 import Error
 
 
-def get_data(connection: sql.Connection, query: str, params: tuple) -> list:
+def get_data(connection: sql.Connection, query: str, params: tuple) -> list | None:
     """
     Retrieve data from a database using the provided query and parameters.
 
-    This function executes the specified SQL query with the given parameters on the provided database connection.
+    This function executes the specified SQL query with the given parameters.
     It retrieves all the resulting rows from the executed query and returns them as a list.
 
     Args:
@@ -16,6 +16,7 @@ def get_data(connection: sql.Connection, query: str, params: tuple) -> list:
 
     Returns:
         list: A list of rows retrieved from the database.
+        None: If an error occurs while executing the query.
 
     Raises:
         Error: If an error occurs while executing the query.
@@ -33,13 +34,14 @@ def get_data(connection: sql.Connection, query: str, params: tuple) -> list:
         return cursor.fetchall()
     except Error as err:
         print(f"Error: '{err}")
+        return None
 
 
 def run_query(connection: sql.Connection, query: str, params: tuple):
     """
     Execute a SQL query on the provided database connection.
 
-    This function executes the specified SQL query with the given parameters on the provided database connection.
+    This function executes the specified SQL query with the given parameters
     It commits the changes to the database if the query execution is successful.
 
     Args:
@@ -58,7 +60,7 @@ def run_query(connection: sql.Connection, query: str, params: tuple):
         >>> query = "INSERT INTO Users (Name, Age) VALUES (?, ?)"
         >>> params = ('John', 28)
         >>> run_query(connection, query, params)
-        Query: 'INSERT INTO Users (Name, Age) VALUES (?, ?)' executed correctly with params: ('John', 28)
+        'INSERT INTO Users (Name, Age) VALUES (?, ?)' executed correctly with params: ('John', 28)
     """
     cursor = connection.cursor()
     try:
@@ -69,11 +71,12 @@ def run_query(connection: sql.Connection, query: str, params: tuple):
         print(f"Error: '{err}'")
 
 
-def connect_database(database_name: str) -> sql.Connection:
+def connect_database(database_name: str) -> sql.Connection | None:
     """
     Connect to a SQLite database and return the database connection object.
 
-    This function establishes a connection to the specified SQLite database using the provided database name.
+    This function create a connection to the specified SQLite database. 
+    It use the provided database name, in case the database does not exist it is created.
     It returns the connection object if the connection is successful.
 
     Args:
@@ -81,6 +84,7 @@ def connect_database(database_name: str) -> sql.Connection:
 
     Returns:
         sql.Connection: The connection object representing the database connection.
+        None: If an error occurs while connecting to the database.
 
     Raises:
         Error: If an error occurs while connecting to the database.
@@ -99,3 +103,4 @@ def connect_database(database_name: str) -> sql.Connection:
         return connection
     except Error as err:
         print(f"Error: '{err}'")
+        return None
