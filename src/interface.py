@@ -128,15 +128,16 @@ def enter_transaction(connection, user_id: int) -> list:
 
     transaction_type = ch.check_transaction_type()    
     while not transaction_type:    
+        print("Invalid transaction type. Plese enter 'expense' or 'income'.")
         transaction_type = ch.check_transaction_type()
     
     amount = ch.check_number("float", "Amount: ")
     while not amount and amount != 0.0:
         amount = ch.check_number("float", "Amount: ")
     
-    description = ch.check_len_user_input("Enter Description: ")
+    description = ch.check_len_user_input("Enter Description: ", 3, 50)
     while not description:
-        description = ch.check_len_user_input("Enter Description: ")
+        description = ch.check_len_user_input("", 3, 50)
     
     category_id = select_category(connection, user_id)
 
@@ -236,11 +237,11 @@ def sign_up_user(connection):
     while True:
         clear_shell()
         
-        login_name = ch.check_len_user_input("Enter your username: ")
-        password = ch.check_len_user_input("Enter your user password: ")
+        login_name = ch.check_len_user_input(3, 50, "Enter your username: ")
+        password = ch.check_len_user_input(3, 50, "Enter your user password: ")
         while not login_name and password:
-            login_name = ch.check_len_user_input("Enter your username: ")
-            password = ch.check_len_user_input("Enter your user password: ")
+            login_name = ch.check_len_user_input(3, 50)
+            password = ch.check_len_user_input(3, 50)
 
         email = ch.check_email()        
         while not email:
