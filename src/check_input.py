@@ -3,7 +3,7 @@ import hashlib
 import re
 
 
-def check_number(data_type: str, message: str):
+def check_number(data_type: str, message: str = "") -> int | float:
     """
     Prompt the user to enter a number of a specified data type and validate the input.
 
@@ -12,11 +12,12 @@ def check_number(data_type: str, message: str):
     Returns the validated number.
 
     Args:
-        data_type (str): The data type to which the user input should be converted ('int' or 'float').
+        data_type (str): The data type to which the input should be converted ('int' or 'float').
         message (str): The message to display when prompting the user for input.
 
     Returns:
         int or float: The validated number.
+        None: In case the input cannot be converted.
 
     Raises:
         ValueError: If the input cannot be converted to the specified data type.
@@ -30,31 +31,37 @@ def check_number(data_type: str, message: str):
         Enter a float: 3.14
         3.14
     """
-    try:
-        if data_type == "int":
-            option = int(input(message))
-        elif data_type == "float":
-            option = float(input(message))
-        else:
-            raise ValueError
-        return option
-    except ValueError:
-        print(f"Invalid input. Please enter a valid {data_type}.")
+    while True:
+        try:
+            if data_type == "int":
+                option = int(input(message))
+            elif data_type == "float":
+                option = float(input(message))
+            else:
+                raise ValueError
+            return option
+        except ValueError:
+            print(f"Invalid input. Please enter a valid {data_type}.")
 
 
-def check_len_user_input(message: str) -> str:
+def check_len_user_input(min_length: int, max_length: int, message: str = "") -> str:
     """
     Prompt the user to enter a username within a specific length range.
 
-    Displays a custom message to guide the user regarding the username requirements.
-    Continuously prompts the user to enter a username until a valid length is provided.
+    This function prompts the user to enter a string and validates the input
+    Validates the input based on the specified minimum and maximum lengths.
     Returns the validated username.
 
     Args:
-        message (str): The custom message to display before prompting for the username.
+        min_length (int): The minimum allowed length of the input string.
+        max_length (int): The maximum allowed length of the input string.
+        message (str, optional): The message to display when prompting the user for input.
 
     Returns:
-        str: The validated username.
+        str: The validated string, if the length is withing the specific range.
+        None: If the input length is not within the specified range.
+
+    Raises: None
 
     Examples:
         >>> check_user_name("Enter your desired username: ")
@@ -62,25 +69,27 @@ def check_len_user_input(message: str) -> str:
         Enter your desired username: myusername
         'myusername'
     """
-    user_input = input(
-        f"{message}\n• Must be between 6 and 50 characters long\n"
-    ).strip()
-    if 3 < len(user_input) < 50:
-        return user_input
-    print("Must be between six and 50 characters long")
-    user_input = input(message).strip()
+    print(f"{message}\n• Must be between {min_length} and {max_length} characters long")
+    while True:
+        user_input = input().strip()
+        if len(user_input) in list(range(min_length, max_length + 1)):
+            return user_input
+        print("Input is too short or too long.", end="")
 
 
 def check_email() -> str:
     """
     Prompt the user to enter an email address and validate its format.
 
-    Continuously prompts the user to enter an email address until a valid format is provided.
+    This function prompts the user to enter an email address until a valid format is provided.
     Uses a regular expression pattern to validate the email format.
     Returns the validated email address.
 
     Returns:
-        str: The validated email address.
+        str: The validated email address, if it match the pattern.
+        None: If the input format is not correct.
+
+    Raises: None
 
     Examples:
         >>> check_email()
@@ -88,12 +97,11 @@ def check_email() -> str:
         Insert your email: example@example.com
         'example@example.com'
     """
-    user_input = input("\n• your_name@example.com\nInsert your email: ").strip()
-    if bool(
-        re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)
-    ):
-        return user_input
-    else:
+    print("\n• your_name@example.com\nInsert your email: ", end="")
+    while True:
+        user_input = input().strip()
+        if bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)):
+            return user_input
         print("Invalid input. Try again")
 
 
@@ -107,6 +115,10 @@ def check_currency() -> str:
 
     Returns:
         str: The currency code selected by the user.
+        None: If the input not corresponds to a valid currency option.
+        
+    Raises: 
+        ValueError: If the input not corresponds to a valid currency option.
 
     Examples:
         >>> check_currency()
@@ -131,24 +143,27 @@ def check_currency() -> str:
     for option, text in currencies.items():
         print(f"[{option}] {text[0]}")
 
-    try:
-        option = int(input("Enter the currency of your choice: "))
-        if option in list(range(1, 11)):
-            return currencies[option][1]
-        raise ValueError
-    except ValueError:
-        print("Invalid input. Try again")
+    while True:
+        try:
+            option = int(input("Enter the currency of your choice: "))
+            if option in list(range(1, 11)):
+                return currencies[option][1]
+            raise ValueError
+        except ValueError:
+            print("Invalid input. Try again")
 
 
 def check_date() -> str:
     """
     Prompt the user for a date and validate that it is in the format 'YYYY-MM-DD'.
 
-    This function continuously prompts the user to enter a date until a valid date in the format 'YYYY-MM-DD' is provided.
-    The entered date is then converted to a datetime object to ensure its validity.
+    This function prompts the user to enter a date a valid date in the format 'YYYY-MM-DD'.
+    Uses the datetime module to validates the date format.
+    Returns the formated date.
 
     Returns:
         str: The valid date string in 'YYYY-MM-DD' format.
+        None: If the entered date is not in the correct format.
 
     Raises:
         ValueError: If the entered date is not in the correct format.
@@ -158,13 +173,14 @@ def check_date() -> str:
         Date (YYYY-MM-DD): 2023-05-13
         '2023-05-13'
     """
-    
     date_str = input("Date (YYYY-MM-DD): ")
-    try:
-        date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-        return date_str
-    except ValueError:
-        print("Invalid date format. Try again.")
+    while True:
+        try:
+            if datetime.datetime.strptime(date_str, "%Y-%m-%d"):
+                return date_str
+            raise ValueError
+        except ValueError:
+            print("Invalid date format. Try again.")
 
 
 def check_transaction_type() -> str:
@@ -172,47 +188,45 @@ def check_transaction_type() -> str:
     Prompt the user to enter a transaction type and validate it.
 
     This function prompts the user to enter a transaction type ('income' or 'expense')
-    and continuously validates the input until a valid transaction type is provided.
-    The input is case-insensitive and will be capitalized.
+    Validates the input is a valid transaction type.
+    The input is case-insensitive and then capitalize.
+    Returns a valid transaction type.
 
     Returns:
         str: The validated transaction type, either 'Income' or 'Expense'.
+        None: If the transactions type is not "Income" or "Expense".
 
-    Raises:
-        None
+    Raises: None
 
     Examples:
         >>> check_transaction_type()
         Enter transaction type (income or expense): expense
         'Expense'
     """
-    
-    transaction_type = input(
-        "Enter transaction type (income or expense): "
-    ).capitalize()
-    if transaction_type in ["Income", "Expense"]:
-        return transaction_type
-    else:
+    while True:
+        transaction_type = input("Enter transaction type (income or expense): ").capitalize()
+        if transaction_type in ["Income", "Expense"]:
+            return transaction_type
         print("Invalid transaction type. Plese enter 'expense' or 'income'.")
-        
+
 
 def hash_password(user_password: str) -> str:
     """
     Hash the user password using the SHA256 algorithm.
-    
+
     This function takes a user password and computes its SHA256 hash. The password
     is first encoded into UTF-8 format before being hashed. The resulting hash is returned
     as a hexadecimal string.
-    
+
     Args:
     user_password (str): The password to be hashed.
-    
+
     Returns:
     str: The SHA256 hash of the user password.
-    
+
     Raises:
     None
-    
+
     Examples:
     >>> hash_user_password('myPassword123')
     '3a4e19f12de49f3dbd68cbfd6f0b15da3d789797d24018b3a44a36e7f8a38c18'
@@ -220,9 +234,6 @@ def hash_password(user_password: str) -> str:
     '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
     """
     password_bytes = user_password.encode("utf-8")
-    
     sha256_hash = hashlib.sha256()
-    
     sha256_hash.update(password_bytes)
-    
     return sha256_hash.hexdigest()
