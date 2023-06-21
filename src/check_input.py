@@ -3,7 +3,7 @@ import hashlib
 import re
 
 
-def check_number(data_type: str, message: str = "") -> int | float | None:
+def check_number(data_type: str, message: str = "") -> int | float:
     """
     Prompt the user to enter a number of a specified data type and validate the input.
 
@@ -31,22 +31,20 @@ def check_number(data_type: str, message: str = "") -> int | float | None:
         Enter a float: 3.14
         3.14
     """
-    try:
-        if data_type == "int":
-            option = int(input(message))
-        elif data_type == "float":
-            option = float(input(message))
-        else:
-            raise ValueError
-        return option
-    except ValueError:
-        print(f"Invalid input. Please enter a valid {data_type}.")
-        return None
+    while True:
+        try:
+            if data_type == "int":
+                option = int(input(message))
+            elif data_type == "float":
+                option = float(input(message))
+            else:
+                raise ValueError
+            return option
+        except ValueError:
+            print(f"Invalid input. Please enter a valid {data_type}.")
 
 
-def check_len_user_input(
-    min_length: int, max_length: int, message: str = ""
-) -> str | None:
+def check_len_user_input(min_length: int, max_length: int, message: str = "") -> str:
     """
     Prompt the user to enter a username within a specific length range.
 
@@ -72,14 +70,14 @@ def check_len_user_input(
         'myusername'
     """
     print(f"{message}\n• Must be between {min_length} and {max_length} characters long")
-    user_input = input().strip()
-    if len(user_input) not in list(range(min_length, max_length + 1)):
-        print("Input is too short or too long.", end="")
-        return None
-    return user_input
+    while True:
+        user_input = input().strip()
+        if len(user_input) not in list(range(min_length, max_length + 1)):
+            print("Input is too short or too long.", end="")
+        return user_input
 
 
-def check_email() -> str | None:
+def check_email() -> str:
     """
     Prompt the user to enter an email address and validate its format.
 
@@ -100,14 +98,14 @@ def check_email() -> str | None:
         'example@example.com'
     """
     print("\n• your_name@example.com\nInsert your email: ", end="")
-    user_input = input().strip()
-    if bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)):
-        return user_input
-    print("Invalid input. Try again")
-    return None
+    while True:
+        user_input = input().strip()
+        if bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", user_input)):
+            return user_input
+        print("Invalid input. Try again")
 
 
-def check_currency() -> str | None:
+def check_currency() -> str:
     """
     Prompt the user to select a currency from a predefined list.
 
@@ -145,17 +143,17 @@ def check_currency() -> str | None:
     for option, text in currencies.items():
         print(f"[{option}] {text[0]}")
 
-    try:
-        option = int(input("Enter the currency of your choice: "))
-        if option in list(range(1, 11)):
-            return currencies[option][1]
-        raise ValueError
-    except ValueError:
-        print("Invalid input. Try again")
-        return None
+    while True:
+        try:
+            option = int(input("Enter the currency of your choice: "))
+            if option in list(range(1, 11)):
+                return currencies[option][1]
+            raise ValueError
+        except ValueError:
+            print("Invalid input. Try again")
 
 
-def check_date() -> str | None:
+def check_date() -> str:
     """
     Prompt the user for a date and validate that it is in the format 'YYYY-MM-DD'.
 
@@ -176,16 +174,16 @@ def check_date() -> str | None:
         '2023-05-13'
     """
     date_str = input("Date (YYYY-MM-DD): ")
-    try:
-        if datetime.datetime.strptime(date_str, "%Y-%m-%d"):
-            return date_str
-        raise ValueError
-    except ValueError:
-        print("Invalid date format. Try again.")
-        return None
+    while True:
+        try:
+            if datetime.datetime.strptime(date_str, "%Y-%m-%d"):
+                return date_str
+            raise ValueError
+        except ValueError:
+            print("Invalid date format. Try again.")
 
 
-def check_transaction_type() -> str | None:
+def check_transaction_type() -> str:
     """
     Prompt the user to enter a transaction type and validate it.
 
@@ -205,12 +203,11 @@ def check_transaction_type() -> str | None:
         Enter transaction type (income or expense): expense
         'Expense'
     """
-    transaction_type = input(
-        "Enter transaction type (income or expense): "
-    ).capitalize()
-    if transaction_type in ["Income", "Expense"]:
-        return transaction_type
-    return None
+    while True:
+        transaction_type = input("Enter transaction type (income or expense): ").capitalize()
+        if transaction_type in ["Income", "Expense"]:
+            return transaction_type
+        print("Invalid transaction type. Plese enter 'expense' or 'income'.")
 
 
 def hash_password(user_password: str) -> str:
