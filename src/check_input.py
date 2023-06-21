@@ -72,9 +72,9 @@ def check_len_user_input(min_length: int, max_length: int, message: str = "") ->
     print(f"{message}\n• Must be between {min_length} and {max_length} characters long")
     while True:
         user_input = input().strip()
-        if len(user_input) not in list(range(min_length, max_length + 1)):
-            print("Input is too short or too long.", end="")
-        return user_input
+        if len(user_input) in list(range(min_length, max_length + 1)):
+            return user_input
+        print("Input is too short or too long.", end="")
 
 
 def check_email() -> str:
